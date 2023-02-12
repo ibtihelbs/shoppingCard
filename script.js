@@ -1,35 +1,7 @@
 const main = document.querySelector('main');
-let cardItems = [
-    {
-       title: 'pink pair of sneakers',
-       img: './images/img1.avif',
-       price: 40,
-       quantity: 2,
-       size: 's',
-       color: "pink",
-       loved: true,
-    },
-    {
-       title: 'orange pair of sneakers',
-       img: './images/img2.avif',
-       price: 45,
-       quantity: 3,
-       size: 'Xl',
-       color: "orange",
-       loved: false,
-    },
-    {
-       title: 'orange pair of sneakers',
-       img: './images/img3.jpg',
-       price: 50,
-       quantity: 4,
-       size: 'L',
-       color: "orange",
-       loved: false,
-    },
-  ]
+
   const innerHtml = (data) => {
-    return `<div>
+    return `<div class="single-card">
   <div>
       <img src=${data.img} alt=${data.title}>
       <div class="quantity-handler">
@@ -61,7 +33,7 @@ let cardItems = [
       </div>
   </div>
   <div class="manage-btn col">
-      <button class="heart ${data.loved ? 'loved': ''}">
+      <button class="heart">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
@@ -86,27 +58,27 @@ function render(){
      })
 }
 render();
+const total = document.getElementById('total');
+let quantity = 0;
+
 const hearts = document.querySelectorAll('.heart');
 console.log(hearts)
 
 hearts.forEach(function(heart, index){
     heart.addEventListener('click', function(e){
         e.preventDefault();
-        cardItems[index].loved = !cardItems[index].loved;
-        console.log(cardItems)
-        main.innerHTML='';
-        render();
+        console.log(e.target)
+        e.target.classList.toggle('loved')
     })
 })
 
 
 const deleteCards = document.querySelectorAll('.delete');
+const singleCard = document.querySelectorAll('.single-card')
 deleteCards.forEach(function(item, index){
     item.addEventListener('click', function(e){
         e.preventDefault();
-        const filtered = cardItems.filter((card, i) => i !== index)
-        main.innerHTML='';
-        cardItems = filtered;
-        render();
+        singleCard[index].style.display="none";
+
     })
 })
