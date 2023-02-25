@@ -128,5 +128,8 @@ img{
     background-color: var(--mint-green);
 }
 .heart{
+    background-color: inherit;
+}
+.hearted{
     background-color: var(--pink-heart);
 }

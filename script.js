@@ -32,14 +32,14 @@ function htmlRender(data){
     <div>
       <img class="shadow" src=${data.img} alt="first">
       <div class="quantity">
-        <button class="shadow-btn">
+        <button class="shadow-btn decrement">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-minus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M5 12l14 0"></path>
              </svg>
         </button>
-        <input type="text" value="5">
-        <button class="shadow-btn">
+        <input class="quantity-value" type="text" min="1" value=${data.quantity}>
+        <button class="shadow-btn increment">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 5l0 14"></path>
@@ -57,7 +57,7 @@ function htmlRender(data){
             </div>
             <div>
                 <h6>sub Total</h6>
-                <span>${ data.quantity * data.price }$</span>
+                <span class="sub-total">${ data.quantity * data.price }$</span>
             </div>
             <div>
                 <h6>size</h6>
@@ -89,12 +89,102 @@ function htmlRender(data){
     </div>
 </div>`;
 }
+const TotalHtml = `
+<div id="total">
+<div>
+    <p>items(<span class="total-quantity">5</span>)</p>
+    <h3>5656</h3>
+</div>
+<button>checkout1111</button>
+</div>`;
 const main = document.querySelector('main');
-console.log(main)
 
 cardItems.forEach(function(item, i){
-    console.log(item.title, i)
+    //console.log(item.title, i)
     main.innerHTML += htmlRender(item);
     const color=document.querySelector('.color');
     color.style.backgroundColor = item.color;
+})
+main.insertAdjacentHTML('beforeend', TotalHtml);
+const totalItemsPrice = document.querySelector('#total h3');
+const subTotal = document.querySelectorAll('.sub-total');
+const itemQuantity = document.querySelector('.total-quantity')
+const itemsQuantity = document.querySelectorAll('.quantity-value')
+
+const decrement = document.querySelectorAll('.decrement');
+const increment = document.querySelectorAll('.increment');
+
+
+
+
+function totalFn (){
+    let totalQuantity = 0;
+    let totalPrice = 0;
+    subTotal.forEach(function(el, i){
+      let sub = parseInt(el.innerHTML.replace('$',''));
+      totalPrice = totalPrice + sub;
+      console.log(itemsQuantity[i].value)
+      totalQuantity = totalQuantity + parseInt(itemsQuantity[i].value) ;
+    })
+    console.log(totalQuantity)
+    totalItemsPrice.innerHTML=`${totalPrice} $`;
+    itemQuantity.innerHTML = totalQuantity;
+}
+totalFn()
+decrement.forEach(function(item, i){
+    
+    item.addEventListener('click', function(e){
+     e.preventDefault();
+     let x = parseInt(itemsQuantity[i].value);
+     if(x == 1) return;
+     itemsQuantity[i].value = x-1;
+     let sub_ = parseInt(subTotal[i].innerHTML.replace('$',''));
+     sub_ = sub_ - cardItems[i].price
+     subTotal[i].innerHTML=sub_
+     console.log(sub_)
+     totalFn()
+    })
+ })
+ increment.forEach(function(item, i){
+    
+    item.addEventListener('click', function(e){
+     e.preventDefault();
+     let x = parseInt(itemsQuantity[i].value);
+     if(x == 1) return;
+     itemsQuantity[i].value = x-1;
+     let sub_ = parseInt(subTotal[i].innerHTML.replace('$',''));
+     sub_ = sub_ + cardItems[i].price
+     subTotal[i].innerHTML=sub_
+     console.log(sub_)
+     totalFn()
+    })
+ })
+const hearts = document.querySelectorAll('.heart');
+hearts.forEach(function(el){
+ el.addEventListener('click',function(e){
+   e.preventDefault();
+   //console.log(e.target)
+   e.target.classList.toggle('hearted');
+ })
+})
+//itemsQuantity, itemQuantity
+const deleteBtns = document.querySelectorAll('.delete');
+const singleCard = document.querySelectorAll('.singleCard');
+console.log(deleteBtns, singleCard)
+deleteBtns.forEach(function(el, index){
+    el.addEventListener('click', function(e){
+       e.preventDefault();
+       let card = singleCard[index];
+       card.style.display = "none";
+       const totalInt = parseInt(totalItemsPrice.innerHTML)
+       const total_ = totalInt-parseInt(subTotal[index].innerHTML)
+       totalItemsPrice.innerHTML=total_;
+       const qnt = parseInt(itemQuantity.innerHTML);
+       const totalQnt = qnt - parseInt(itemsQuantity[index].value);
+       if (totalQnt == 0){
+        main.innerHTML= '<h1>your card is empty !</h1>'
+       }
+       itemQuantity.innerHTML = totalQnt;   
+    })
+
 })
